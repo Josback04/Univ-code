@@ -69,7 +69,7 @@ def bestFirstSearch(graph, start, end, coords):
 
 
 etat_initial = "Kinshasa"
-etat_but = "Goma"
+etat_but = "Matadi"
 
 
 coords_villes = {
@@ -122,7 +122,7 @@ else:
 carte = folium.Map(location=[-2.88, 23.65], zoom_start=5)  
 
 for ville, coord in coords_villes.items():
-    folium.Marker(location=coord, popup=ville, icon=folium.Icon(color="blue")).add_to(carte)
+    folium.Marker(location=coord, popup=ville, icon=folium.Icon(color="blue", icon="fa-hotel", prefix='fa')).add_to(carte)
 
 for ville, voisins in graph_RDC.items():
     for voisin, distance in voisins.items():
@@ -134,8 +134,15 @@ if chemin:
     for i in range(len(chemin) - 1):
         ville_depart = chemin[i]
         ville_arrivee = chemin[i + 1]
-        folium.PolyLine([coords_villes[ville_depart], coords_villes[ville_arrivee]],
-                        color="red", weight=4, opacity=1,
-                        tooltip=f"Trajet optimal : {ville_depart} ↔ {ville_arrivee}").add_to(carte)
+        distance = graph_RDC[ville_depart][ville_arrivee]
+        folium.PolyLine(
+            locations=[coords_villes[ville_depart], coords_villes[ville_arrivee]],
+            color="red",
+            weight=4,
+            opacity=1,
+            tooltip=f"Trajet optimal : {ville_depart} ↔ {ville_arrivee} : {distance} km",  # Afficher la distance
+        ).add_to(carte)
+
+
 
 carte.save("carte_RDC.html")
